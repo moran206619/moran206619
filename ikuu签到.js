@@ -1,41 +1,53 @@
 /*
- * iKuuu 自动签到 - Quantumult X 版
+ * @name         iKuuu签到助手
+ * @desc         集成自动签到与Cookie获取
+ *               机场链接: https://ikuuu.win/user 或 https://ikuuu.fyi/user
+ *               静默运行: $argument 包含 # 时静默，不弹通知
+ * @author       〈ザㄩメ火华
+ * @icon         https://raw.githubusercontent.com/loveyuwy/hao/refs/heads/main/ikuuu.png
+ * @system       iOS
  *
- * 使用说明：
- * 1. 在 Quantumult X → 重写 中添加：
- *    hostname = ikuuu.win, ikuuu.fyi
- *    ^https?://(ikuuu\.win|ikuuu\.fyi) url script-request-header ikuuu_quanx.js
+ * ════════════════ Quantumult X 配置 ════════════════
  *
- * 2. 在 Quantumult X → 任务 中添加定时任务：
- *    0 8 * * * ikuuu_quanx.js, tag=iKuuu签到, img-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Rocket.png, enabled=true
+ * [rewrite_local]
+ * ^https?://(ikuuu\.fyi|ikuuu\.win)/user url script-request-header https://raw.githubusercontent.com/moran206619/moran206619/refs/heads/main/ikuu签到.js
  *
- * 3. 开启 MitM，确保 ikuuu.win 和 ikuuu.fyi 在 hostname 列表中。
+ * [task_local]
+ * 0 9 * * * https://raw.githubusercontent.com/moran206619/moran206619/refs/heads/main/ikuu签到.js, tag=iKuuu自动签到, img-url=https://raw.githubusercontent.com/loveyuwy/hao/refs/heads/main/ikuuu.png, enabled=true
  *
- * 4. 用浏览器访问 https://ikuuu.fyi/user 登录，Cookie 将自动保存。
+ * [mitm]
+ * hostname = ikuuu.win, ikuuu.fyi
  *
- * 参数说明（任务参数中加 # 开启静默模式，签到成功不弹通知）：
- *    tag=iKuuu签到#silent
+ * ════════════════════════════════════════════════════
+ *
+ * 使用步骤：
+ * 1. 将上方 [rewrite_local] / [task_local] / [mitm] 配置填入 QuanX 对应栏目
+ * 2. 开启 MitM，用浏览器访问 https://ikuuu.fyi/user 登录，Cookie 自动保存
+ * 3. 定时任务每天 09:00 自动签到
+ * 4. 如需静默（成功不弹通知），在任务 tag 末尾加 # 即可，例如: tag=iKuuu签到#
  */
 
 const SCRIPT_NAME = "iKuuu助手";
 const CHECKIN_URL = "https://ikuuu.win/user/checkin";
-const COOKIE_KEY = "ikuuu_cookie";
+const COOKIE_KEY  = "ikuuu_cookie";
 
-// 判断是否静默模式（$argument 包含 # 时静默）
+// 静默模式：$argument 包含 # 时不弹成功通知
 const isSilent = typeof $argument === "string" && $argument.includes("#");
 
-// 入口判断：重写触发还是定时任务触发
+// ── 入口判断 ──────────────────────────────────────────────────────────────────
+// 重写触发（$request 存在）→ 保存 Cookie
+// 定时任务触发            → 执行签到
 if (typeof $request !== "undefined") {
     saveCookie();
 } else {
     doCheckin();
 }
 
-// ─── 保存 Cookie ───────────────────────────────────────────────────────────────
+// ── 保存 Cookie ───────────────────────────────────────────────────────────────
 function saveCookie() {
     const headers = $request.headers || {};
-    const cookie = headers["Cookie"] || headers["cookie"] || "";
-    const url = $request.url || "";
+    const cookie  = headers["Cookie"] || headers["cookie"] || "";
+    const url     = $request.url || "";
 
     if (cookie && /ikuuu\.(win|fyi)/.test(url)) {
         $prefs.setValueForKey(cookie, COOKIE_KEY);
@@ -46,45 +58,43 @@ function saveCookie() {
     $done({});
 }
 
-// ─── 执行签到 ──────────────────────────────────────────────────────────────────
+// ── 执行签到 ──────────────────────────────────────────────────────────────────
 function doCheckin() {
     const cookie = $prefs.valueForKey(COOKIE_KEY);
 
     if (!cookie) {
         $notify(SCRIPT_NAME + " ⚠️", "未找到 Cookie", "请开启 MitM 并访问 ikuuu.fyi 登录 🚫");
-        console.log("❌ 未找到 Cookie，任务终止。");
+        console.log("❌ 未找到 Cookie，任务终止");
         $done();
         return;
     }
 
-    const opts = {
-        url: CHECKIN_URL,
-        method: "POST",
-        headers: {
-            "Cookie": cookie,
-            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.2 Mobile/15E148 Safari/604.1",
-            "Referer": "https://ikuuu.fyi/user",
-            "Origin": "https://ikuuu.fyi",
-            "X-Requested-With": "XMLHttpRequest",
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: ""
-    };
-
     console.log("▶️ 开始签到...");
     if (isSilent) console.log("🔇 静默模式已开启");
 
-    $task.fetch(opts).then(
+    $task.fetch({
+        url: CHECKIN_URL,
+        method: "POST",
+        headers: {
+            "Cookie":           cookie,
+            "User-Agent":       "Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.2 Mobile/15E148 Safari/604.1",
+            "Referer":          "https://ikuuu.fyi/user",
+            "Origin":           "https://ikuuu.fyi",
+            "X-Requested-With": "XMLHttpRequest",
+            "Content-Type":     "application/x-www-form-urlencoded"
+        },
+        body: ""
+    }).then(
         response => handleResponse(response.body),
         error    => handleError(error)
     );
 }
 
-// ─── 处理响应 ──────────────────────────────────────────────────────────────────
+// ── 处理响应 ──────────────────────────────────────────────────────────────────
 function handleResponse(body) {
-    // Cookie 失效时服务器返回 HTML
+    // Cookie 失效时服务器返回 HTML 页面
     if (body && body.includes("<html")) {
-        $notify(SCRIPT_NAME + " 🛑", "Cookie 已失效", "请重新访问网页重新获取 🔄");
+        $notify(SCRIPT_NAME + " 🛑", "Cookie 已失效", "请重新访问网页获取 Cookie 🔄");
         console.log("❌ Cookie 失效，服务器返回 HTML");
         $done();
         return;
@@ -105,7 +115,6 @@ function handleResponse(body) {
     const dateStr = now.toLocaleDateString("zh-CN");
 
     if (obj.ret === 1) {
-        // 签到成功
         console.log("✅ 签到成功: " + obj.msg);
         if (!isSilent) {
             $notify(
@@ -115,7 +124,6 @@ function handleResponse(body) {
             );
         }
     } else {
-        // 已签到或其他提示
         console.log("⚠️ 签到结果: " + obj.msg);
         const alreadyChecked = obj.msg.includes("已经");
         if (!alreadyChecked || !isSilent) {
@@ -130,7 +138,7 @@ function handleResponse(body) {
     $done();
 }
 
-// ─── 处理网络错误 ──────────────────────────────────────────────────────────────
+// ── 处理网络错误 ──────────────────────────────────────────────────────────────
 function handleError(error) {
     $notify(SCRIPT_NAME + " ❌", "网络错误", "无法连接到服务器，请检查网络 📶");
     console.log("❌ 网络错误: " + JSON.stringify(error));
