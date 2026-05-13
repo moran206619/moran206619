@@ -1,0 +1,8 @@
+[MITM]
+hostname = api.wfdata.club
+
+[rewrite_local]
+^https?:\/\/api.wfdata.club\/v1\/auth\/signin url script-request-body https://raw.githubusercontent.com/moran206619/moran206619/refs/heads/main/Scripts/weifeng/cookie
+
+[task_local]
+1 0 * * * https://raw.githubusercontent.com/moran206619/moran206619/refs/heads/main/威锋自动签到.js
