@@ -10,10 +10,10 @@
  * ════════════════ Quantumult X 配置 ════════════════
  *
  * [rewrite_local]
- * ^https?://(ikuuu\.fyi|ikuuu\.win)/user url script-request-header https://raw.githubusercontent.com/moran206619/moran206619/refs/heads/main/ikuu签到.js
+ * ^https?://(ikuuu\.fyi|ikuuu\.win)/user url script-request-header https://raw.githubusercontent.com/moran206619/moran206619/refs/heads/main/签到.js
  *
  * [task_local]
- * 0 9 * * * https://raw.githubusercontent.com/moran206619/moran206619/refs/heads/main/ikuu签到.js, tag=iKuuu自动签到, img-url=https://raw.githubusercontent.com/loveyuwy/hao/refs/heads/main/ikuuu.png, enabled=true
+ * 0 9 * * * https://raw.githubusercontent.com/moran206619/moran206619/refs/heads/main/签到.js, tag=签到, img-url=https://raw.githubusercontent.com/loveyuwy/hao/refs/heads/main/ikuuu.png, enabled=true
  *
  * [mitm]
  * hostname = ikuuu.win, ikuuu.fyi
