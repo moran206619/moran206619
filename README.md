@@ -31,7 +31,7 @@ data-store/
 
 ## 📊 支持格式
 
-`CSV` `JSON` `XLSX` `Parquet` `XML` `TXT` `YAML` `SQLite`
+`CSV` `JSON` `XLSX` `Parquet` `XML` `TXT` `YAML` `SQLite` `js` `snippet`
 
 ---
 
