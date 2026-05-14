@@ -1,10 +1,10 @@
-# 📦 莫然
+<h1 align="center">📦 莫然</h1>
 
-> 用于集中存储、管理与归档各类数据资产的 GitHub 仓库
+<h3 align="center">用于集中存储、管理与归档各类数据资产的 GitHub 仓库</h3>
 
 ![Active](https://img.shields.io/badge/status-active-brightgreen) ![License](https://img.shields.io/badge/license-MIT-blue)
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="">
 
 ## 📖 简介
 
@@ -70,4 +70,3 @@ data-store/
 
 本仓库数据遵循 **MIT License**，使用前请查阅具体数据集的授权说明。
 
-### [回到首页](https://github.com/moran206619/moran206619?tab=readme-ov-file#readme)
