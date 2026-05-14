@@ -1,4 +1,4 @@
-## QuantumultX小白配置
+## QuantumultX 脚本
 
 ### 使用方法：
 
