@@ -8,11 +8,7 @@
 
 ## 📖 简介
 
-本仓库作为统一的数据存储中心，用于归档、版本管理和共享各类结构化/非结构化数据文件。所有数据按类型与时间维度有序组织，便于检索与追溯。
-
-适用于数据备份、数据集分发、跨项目数据共享等场景。
-
-
+本仓库作为统一的数据存储中心，用于收集一些QuantumultX、Loon、Surge、ShadowRocket的配置与脚本，去广告合集。
 
 ## 📁 目录结构
 
@@ -69,4 +65,9 @@ data-store/
 ## 📄 许可证
 
 本仓库数据遵循 **MIT License**，使用前请查阅具体数据集的授权说明。
+### 🧚‍♀️ 访问量
+开始于 2025.09.13
+
+![GitHub Profile Views](https://komarev.com/ghpvc/?username=moran206619&color=green)
+
 
