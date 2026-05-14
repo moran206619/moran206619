@@ -9,7 +9,7 @@
 ## 📖 简介
 
 本仓库作为统一的数据存储中心，用于收集一些QuantumultX、Loon、Surge、ShadowRocket的配置与脚本，去广告合集。
-
+> 脚本来源于各大仓库及AI生成
 ## 📁 目录结构
 
 
